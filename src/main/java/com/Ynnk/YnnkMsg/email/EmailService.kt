@@ -580,7 +580,7 @@ class EmailService(private val context: Context) {
                     val decodedResult = decodeBody(bodyRaw)
 
                     if (decodedResult.params?.needConfirmReceived == true)
-
+                    {
                         val use_time = decodedResult.params.sendTime ?: -1;
                         if (!receiveToConfirmMap.contains(effectiveEmail) || receiveToConfirmMap[effectiveEmail]!! < use_time) {
                             receiveToConfirmMap[effectiveEmail] = use_time;
