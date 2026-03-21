@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">YnnkMSG</string>
+
+    <!-- Login -->
+    <string name="email_hint">Электронная почта</string>
+    <string name="password_hint">Пароль</string>
+    <string name="select_avatar_btn">Выбрать аватар</string>
+    <string name="login_btn">Войти</string>
+    <string name="manual_settings">Ручные настройки сервера ▼</string>
+    <string name="hide_manual_settings">Ручные настройки сервера ▲</string>
+    <string name="imap_host">IMAP сервер</string>
+    <string name="imap_port">IMAP порт</string>
+    <string name="smtp_host">SMTP сервер</string>
+    <string name="smtp_port">SMTP порт</string>
+    <string name="imap_ssl">SSL/TLS (IMAP)</string>
+    <string name="smtp_ssl">SSL/TLS (SMTP)</string>
+    <string name="smtp_starttls">STARTTLS (SMTP)</string>
+    <string name="provider_detected">✓ Настройки определены автоматически</string>
+    <string name="select_avatar">Пожалуйста, выберите аватар</string>
+    <string name="auth_failed">Ошибка авторизации. Проверьте логин и пароль.</string>
+    <string name="avatar_save_error">Не удалось сохранить аватар</string>
+    <string name="fill_server_settings">Заполните настройки сервера</string>
+    <string name="required">Обязательное поле</string>
+    <string name="recommend_new_mailbox">💡 Рекомендуем создать отдельный почтовый ящик для YnnkMsg</string>
+    <string name="checking_connection">Проверка подключения…</string>
+    <string name="error_pgp_generation">Ошибка генерации ключей шифрования</string>
+
+    <string name="login_instructions_toggle">Инструкция по регистрации ▼</string>
+    <string name="login_instructions_toggle_hide">Инструкция по регистрации ▲</string>
+    <string name="login_instructions_text"><![CDATA[1. Создайте аккаунт в сервисе электронной почты с поддержкой IMAP/SMTP (Яндекс, Mail.ru, Gmail, Outlook, Yahoo! и т. д.). Эти протоколы не поддерживаются сервисами Tuta и ProtonMail.\n\n2. Разрешите использование протоколов почтовых клиентов (IMAP/POP3/SMTP) в настройках почтового ящика.\n\n2.1. Яндекс.\nОткройте почту в браузере (на мобильных устройствах переключитесь в полную версию), выберите иконку Настройки (слева внизу) - Все настройки - Почтовые клиента.\na. Разрешить доступ к почтовому ящику с помощью почтовых клиентов: С сервера imap.yandex.com по протоколу IMAP\n\n2.2. Google.\nОткройте почту в браузере, выберите Настройки - Все настройки - Пересылка и POP/IMAP\na. Включить POP (подойдет любая из двух опций).\nb. Когда сообщение помечается как удаленное и стирается из последней видимой папки IMAP: Немедленно удалить письмо без возможности восстановления\n\n3. Сгенерируйте пароль для приложений, который дает доступ к серверам IMAP и SMTP.\n\nПримечание: чтобы создать пароль, все упомянутые сервисы потребуют от вас активировать двухфакторную авторизацию при помощи телефона (при этом если Google не говорит прямо, что другие методы его не устроят). Разумеется, это необходимо только-только для вашей безопасности и больше ничего.\n\na. Yandex: https://id.yandex.ru/security/app-passwords\nb. Mail.ru: https://account.mail.ru/user/2-step-auth/passwords\nc. Gmail: https://myaccount.google.com/apppasswords]]></string>
+
+    <!-- PIN Code -->
+    <string name="pin_label">Защита PIN-кодом</string>
+    <string name="change_pin">Изменить PIN-код</string>
+    <string name="set_pin">Установить PIN-код</string>
+    <string name="enter_pin">Введите PIN-код</string>
+    <string name="create_pin">Создайте 4-значный PIN-код</string>
+    <string name="confirm_pin">Подтвердите PIN-код</string>
+    <string name="pins_dont_match">PIN-коды не совпадают</string>
+    <string name="pin_changed">PIN-код изменен</string>
+    <string name="pin_error">Неверный PIN-код</string>
+
+    <!-- Contacts -->
+    <string name="no_contacts">Нет контактов.\nНажмите + чтобы добавить.</string>
+    <string name="add_contact">Добавить контакт</string>
+    <string name="contact_email_hint">E-mail контакта</string>
+    <string name="contact_name_hint">Имя контакта</string>
+    <string name="add">Добавить</string>
+    <string name="cancel">Отмена</string>
+    <string name="delete_contact">Удалить контакт</string>
+    <string name="delete_contact_confirm">Удалить контакт %1$s?</string>
+    <string name="open_chat">Открыть чат</string>
+    <string name="logout">Выход из аккаунта</string>
+    <string name="logout_confirm">Выйти из аккаунта?</string>
+    <string name="yes">Да</string>
+    <string name="no">Нет</string>
+    <string name="fill_all_fields">Заполните все поля</string>
+    <string name="invalid_email">Некорректный адрес электронной почты</string>
+    <string name="edit_contact">Посмотреть/изменить контакт</string>
+    <string name="save">Сохранить</string>
+    <string name="saved">Сохранено</string>
+    <string name="request_avatar">Запросить аватар</string>
+    <string name="requesting_avatar">Запрос данных отправлен…</string>
+    <string name="tap_to_change_avatar">Нажмите, чтобы изменить аватар</string>
+    <string name="name">Имя</string>
+    <string name="messaging_requests_title">Входящие запросы</string>
+    <string name="allow">Разрешить</string>
+    <string name="decline">Отклонить</string>
+    <string name="update_verify_key">Обновить данные пользователя</string>
+    <string name="contact_data_updated">Данные контакта %1$s обновлены</string>
+    <string name="edit_account">Мой профиль</string>
+    <string name="exchange_keys">Обменяться ключами шифрования</string>
+    <string name="exchange_keys_warning">Обмен ключами через основную почту может быть не полностью безопасным. Продолжить?</string>
+    <string name="secondary_safe_email">Второй безопасный e-mail</string>
+    <string name="exclusive_mail_box">E-mail эксклюзивный для YnnkMSG</string>
+
+    <!-- Chat -->
+    <string name="message_hint">Сообщение…</string>
+    <string name="search">Поиск</string>
+    <string name="back">Назад</string>
+    <string name="clear_chat">Очистить чат</string>
+    <string name="clear_chat_confirm">Очистить всю переписку? Это действие нельзя отменить.</string>
+    <string name="clear">Очистить</string>
+    <string name="delete">Удалить</string>
+    <string name="delete_message_confirm">Удалить это сообщение?</string>
+    <string name="attach">Вложение</string>
+    <string name="take_photo">Сфотографировать</string>
+    <string name="pick_photo">Выбрать из галереи</string>
+    <string name="pick_file">Выбрать файл</string>
+    <string name="file_too_large">Файл слишком большой (макс. 10 МБ)</string>
+    <string name="attachments_count">Вложений: %1$d</string>
+    <string name="sending">Отправка…</string>
+    <string name="open_file">Открыть файл</string>
+    <string name="image_processing_error">Не удалось обработать изображение</string>
+    <string name="attachment_indicator">📎 %1$s</string>
+    <string name="forward">Переслать</string>
+    <string name="forward_to">Переслать…</string>
+    <string name="forward_from">От:</string>
+    <string name="open">Открыть</string>
+    <string name="save_to_downloads">Сохранить в Загрузки</string>
+    <string name="saved_to_downloads">Файл сохранен в Загрузки</string>
+    <string name="no_app_to_open">Нет приложений для открытия этого файла</string>
+    <string name="paste_public_key">Вставить публичный ключ</string>
+    <string name="copy_my_public_key">Скопировать мой ключ</string>
+    <string name="invalid_pgp_key">Некорректный PGP ключ</string>
+    <string name="public_key_pasted">Ключ вставлен</string>
+    <string name="public_key_copied">Ваш ключ скопирован в буфер обмена</string>
+
+    <!-- Settings -->
+    <string name="settings">Настройки</string>
+    <string name="auto_delete_label">Автоудаление писем с сервера</string>
+    <string name="auto_add_contacts_label">Автоматически добавлять контакты</string>
+    <string name="auto_request_confirmation">Уведомлять о получении</string>
+    <string name="base26_label">Кодировка Base26</string>
+    <string name="base26_info">Base26 не шифрует ваши сообщения и не обеспечивает приватность!</string>
+    <string name="pgp_label">PGP-шифрование</string>
+    <string name="pgp_unavailable_warning">Шифрование недоступно: ключи не созданы</string>
+    <string name="pgp_requires_base26">PGP требует включенной кодировки Base26</string>
+    <string name="choose_background">Выбрать фон</string>
+    <string name="clear_background">Сбросить фон</string>
+    <string name="font_size_label">Размер шрифта: %1$d</string>
+    <string name="background_preview">Предпросмотр фона чатов</string>
+    <string name="clear_cache">Очистить все данные (сброс)</string>
+    <string name="clear_cache_confirm">Вы уверены, что хотите удалить ВСЕ данные приложения (сообщения, контакты и настройки, пароль почты)?</string>
+    <string name="ignored_emails_title">Черный список</string>
+    <string name="manage_ignored_emails">Управление черным списком</string>
+    <string name="add_ignored_email">Добавить в ЧС</string>
+    <string name="app_events">Системный журнал</string>
+
+    <string name="cleanup_options_title">Очистка данных</string>
+    <string name="wipe_all_cache">Полный сброс (удалить все)</string>
+    <string name="delete_user_data">Удалить данные текущего пользователя</string>
+    <string name="delete_user_data_confirm">Удалить ваши сообщения и контакты? Вы останетесь в системе.</string>
+
+    <!-- Edit Profile -->
+    <string name="secondary_email_header">Дополнительная почта ▼</string>
+    <string name="hide_secondary_email_header">Дополнительная почта ▲</string>
+    <string name="secondary_email_hint">Дополнительный e-mail</string>
+    <string name="recreate_keys">Пересоздать ключи шифрования</string>
+    <string name="delete_keys">Удалить ключи шифрования</string>
+    <string name="recreate_keys_confirm">Вы уверены? Старые сообщения будет невозможно прочитать.</string>
+    <string name="keys_deleted">Ключи удалены</string>
+    <string name="keys_recreated">Ключи пересозданы</string>
+    <string name="generating_keys">Генерация ключей…</string>
+    <string name="second_mail_desc">Этот адрес будет использован для обмена ключами шифрования и чувствительными данными. Используйте сервис в иной юрисдикации (например, Gmail, если основной адрес находится в России, либо наоборот).</string>
+
+    <!-- Service/Errors -->
+    <string name="error_not_authorized">Не авторизован</string>
+    <string name="error_no_password">Нет пароля</string>
+    <string name="error_no_smtp_settings">Нет настроек SMTP</string>
+    <string name="error_no_imap_settings">Нет настроек IMAP</string>
+    <string name="error_send_failed">Ошибка отправки: %1$s</string>
+    <string name="error_fetch_auth_failed">Ошибка авторизации при получении почты</string>
+    <string name="mailbox_full_warning">Почтовый ящик заполнен на %1$d%%! Невозможно получать сообщения.</string>
+    <string name="mailbox_full_short">Ящик заполнен</string>
+    <string name="new_messages_notification">Получено новых сообщений: %1$d</string>
+    <string name="notification_channel_name">YnnkMsg новые сообщения</string>
+    <string name="system_message">Системное сообщение</string>
+    <string name="currupted_attachment">[Вложение повреждено]</string>
+
+    <!-- Encoder Errors -->
+    <string name="error_expected_chars">Ожидалось %1$d символов данных, получено %2$d</string>
+    <string name="error_string_too_short">Строка слишком короткая</string>
+
+</resources>

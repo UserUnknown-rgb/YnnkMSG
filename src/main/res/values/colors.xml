@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="teal_200">#FF80CBC4</color>
+    <color name="teal_700">#FF00796B</color>
+    <color name="teal_900">#FF004D40</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="black">#FF000000</color>
+    <color name="bubble_outgoing">#DCF8C6</color>
+    <color name="bubble_incoming">#FFFFFF</color>
+    <color name="message_time">#999999</color>
+    <color name="avatar_background">#00796B</color>
+    <color name="surface">#F5F5F5</color>
+    <color name="ic_launcher_background">#0B8375</color>
+    <color name="light_blue">#D3E6F9</color>
+</resources>

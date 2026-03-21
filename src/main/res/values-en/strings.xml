@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">YnnkMSG</string>
+
+    <!-- Login -->
+    <string name="email_hint">Email</string>
+    <string name="password_hint">Password</string>
+    <string name="select_avatar_btn">Select Avatar</string>
+    <string name="login_btn">Login</string>
+    <string name="manual_settings">Manual Server Settings ▼</string>
+    <string name="hide_manual_settings">Hide Manual Settings ▲</string>
+    <string name="imap_host">IMAP Server</string>
+    <string name="imap_port">IMAP Port</string>
+    <string name="smtp_host">SMTP Server</string>
+    <string name="smtp_port">SMTP Port</string>
+    <string name="imap_ssl">SSL/TLS (IMAP)</string>
+    <string name="smtp_ssl">SSL/TLS (SMTP)</string>
+    <string name="smtp_starttls">STARTTLS (SMTP)</string>
+    <string name="provider_detected">✓ Settings detected automatically</string>
+    <string name="select_avatar">Please select an avatar</string>
+    <string name="auth_failed">Authentication failed. Check your login and password.</string>
+    <string name="avatar_save_error">Failed to save avatar</string>
+    <string name="fill_server_settings">Fill server settings</string>
+    <string name="required">Required field</string>
+    <string name="recommend_new_mailbox">💡 We recommend creating a separate mailbox for YnnkMsg</string>
+    <string name="checking_connection">Checking connection…</string>
+    <string name="error_pgp_generation">Error generating encryption keys</string>
+
+    <string name="login_instructions_toggle">Setup Instructions ▼</string>
+    <string name="login_instructions_toggle_hide">Setup Instructions ▲</string>
+    <string name="login_instructions_text"><![CDATA[1. Create new account at e-mail service supporting IMAP/SMTP (Gmail, Outlook, Yandex, Mail.ru, Yahoo! etc). These services don\'t support IMAP: Tuta, ProtonMail.\n\n2. Enable access from mail clients (IMAP/POP3/SMTP) in your mail settings.\n\n2.1. Google.\nOpen email in browser, select Settings - See all settings - Forwarding and POP/IMAP\na. Enable POP (any of two options).\nb. When a message is marked as deleted and expunged from the last visible IMAP folder: Immediately delete the message forever.\n\n2.2. Yandex.\nOpen email in browser (for mobile, switch to full version), select Settings - All settings - Email clients.\na. Use a mail client to retrieve your Yandex mail: From the imap.yandex.com server via IMAP\n\n3. Get an app password for IMAP and SMTP servers.\n\nNote: to generate app password all these services require to enable two-step auth via phone/sms (to ensure your security OF COURSE).\n\na. Gmail: https://myaccount.google.com/apppasswords\nb. Yandex: https://id.yandex.ru/security/app-passwords\nc. Mail.ru: https://account.mail.ru/user/2-step-auth/passwords]]></string>
+
+    <!-- PIN Code -->
+    <string name="pin_label">PIN Code Protection</string>
+    <string name="change_pin">Change PIN</string>
+    <string name="set_pin">Set PIN</string>
+    <string name="enter_pin">Enter PIN</string>
+    <string name="create_pin">Create 4-digit PIN</string>
+    <string name="confirm_pin">Confirm PIN</string>
+    <string name="pins_dont_match">PINs don\'t match</string>
+    <string name="pin_changed">PIN changed</string>
+    <string name="pin_error">Incorrect PIN</string>
+
+    <!-- Contacts -->
+    <string name="no_contacts">No contacts.\nTap + to add.</string>
+    <string name="add_contact">Add contact</string>
+    <string name="contact_email_hint">Contact email</string>
+    <string name="contact_name_hint">Contact name</string>
+    <string name="add">Add</string>
+    <string name="cancel">Cancel</string>
+    <string name="delete_contact">Delete contact</string>
+    <string name="delete_contact_confirm">Delete contact %1$s?</string>
+    <string name="open_chat">Open chat</string>
+    <string name="logout">Logout</string>
+    <string name="logout_confirm">Logout?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="fill_all_fields">Fill all fields</string>
+    <string name="invalid_email">Invalid email address</string>
+    <string name="edit_contact">View/Edit contact</string>
+    <string name="save">Save</string>
+    <string name="saved">Saved</string>
+    <string name="request_avatar">Request avatar</string>
+    <string name="requesting_avatar">Data request sent…</string>
+    <string name="tap_to_change_avatar">Tap to change avatar</string>
+    <string name="name">Name</string>
+    <string name="messaging_requests_title">Incoming requests</string>
+    <string name="allow">Allow</string>
+    <string name="decline">Decline</string>
+    <string name="update_verify_key">Update user data</string>
+    <string name="contact_data_updated">Contact %1$s data updated</string>
+    <string name="edit_account">My profile</string>
+    <string name="exchange_keys">Exchange encryption keys</string>
+    <string name="exchange_keys_warning">Exchanging keys via primary email might not be fully secure. Continue?</string>
+    <string name="secondary_safe_email">Second secure email</string>
+    <string name="exclusive_mail_box">Exclusive email for YnnkMSG</string>
+
+    <!-- Chat -->
+    <string name="message_hint">Message…</string>
+    <string name="search">Search</string>
+    <string name="back">Back</string>
+    <string name="clear_chat">Clear chat</string>
+    <string name="clear_chat_confirm">Clear all messages? This action cannot be undone.</string>
+    <string name="clear">Clear</string>
+    <string name="delete">Delete</string>
+    <string name="delete_message_confirm">Delete this message?</string>
+    <string name="attach">Attachment</string>
+    <string name="take_photo">Take photo</string>
+    <string name="pick_photo">Choose from gallery</string>
+    <string name="pick_file">Choose file</string>
+    <string name="file_too_large">File is too large (max 10 MB)</string>
+    <string name="attachments_count">Attachments: %1$d</string>
+    <string name="sending">Sending…</string>
+    <string name="open_file">Open file</string>
+    <string name="image_processing_error">Failed to process image</string>
+    <string name="attachment_indicator">📎 %1$s</string>
+    <string name="forward">Forward</string>
+    <string name="forward_to">Forward to…</string>
+    <string name="forward_from">From:</string>
+    <string name="open">Open</string>
+    <string name="save_to_downloads">Save to Downloads</string>
+    <string name="saved_to_downloads">File saved to Downloads</string>
+    <string name="no_app_to_open">No app found to open this file</string>
+    <string name="paste_public_key">Paste public key</string>
+    <string name="copy_my_public_key">Copy my key</string>
+    <string name="invalid_pgp_key">Invalid PGP key</string>
+    <string name="public_key_pasted">Key pasted</string>
+    <string name="public_key_copied">Your key copied to clipboard</string>
+
+    <!-- Settings -->
+    <string name="settings">Settings</string>
+    <string name="auto_delete_label">Auto-delete emails from server</string>
+    <string name="auto_add_contacts_label">Automatically add contacts</string>
+    <string name="auto_request_confirmation">Delivery notification</string>
+    <string name="base26_label">Base26 Encoding</string>
+    <string name="base26_info">Base26 does not encrypt your messages and does not provide privacy!</string>
+    <string name="pgp_label">PGP Encryption</string>
+    <string name="pgp_unavailable_warning">Encryption unavailable: keys not created</string>
+    <string name="pgp_requires_base26">PGP requires Base26 encoding to be enabled</string>
+    <string name="choose_background">Choose background</string>
+    <string name="clear_background">Reset background</string>
+    <string name="font_size_label">Font size: %1$d</string>
+    <string name="background_preview">Chat background preview</string>
+    <string name="clear_cache">Clear all data (reset)</string>
+    <string name="clear_cache_confirm">Are you sure you want to delete ALL app data (messages, contacts, settings, email password)?</string>
+    <string name="ignored_emails_title">Blocklist</string>
+    <string name="manage_ignored_emails">Manage blocklist</string>
+    <string name="add_ignored_email">Add to blocklist</string>
+    <string name="app_events">System log</string>
+
+    <string name="cleanup_options_title">Data cleanup</string>
+    <string name="wipe_all_cache">Full reset (delete everything)</string>
+    <string name="delete_user_data">Delete current user data</string>
+    <string name="delete_user_data_confirm">Delete your messages and contacts? You will remain logged in.</string>
+
+    <!-- Edit Profile -->
+    <string name="secondary_email_header">Secondary email ▼</string>
+    <string name="hide_secondary_email_header">Hide secondary email ▲</string>
+    <string name="secondary_email_hint">Secondary email</string>
+    <string name="recreate_keys">Recreate encryption keys</string>
+    <string name="delete_keys">Delete encryption keys</string>
+    <string name="recreate_keys_confirm">Are you sure? Old messages will become unreadable.</string>
+    <string name="keys_deleted">Keys deleted</string>
+    <string name="keys_recreated">Keys recreated</string>
+    <string name="generating_keys">Generating keys…</string>
+    <string name="second_mail_desc">This email is to exchange encryption keys and other sensitive data. Use for secondary mail service in other jurisdiction than primary email.</string>
+
+    <!-- Service/Errors -->
+    <string name="error_not_authorized">Not authorized</string>
+    <string name="error_no_password">No password</string>
+    <string name="error_no_smtp_settings">No SMTP settings</string>
+    <string name="error_no_imap_settings">No IMAP settings</string>
+    <string name="error_send_failed">Send error: %1$s</string>
+    <string name="error_fetch_auth_failed">Authentication error while fetching email</string>
+    <string name="mailbox_full_warning">Mailbox is %1$d%% full! Cannot receive messages.</string>
+    <string name="mailbox_full_short">Mailbox full</string>
+    <string name="new_messages_notification">New messages received: %1$d</string>
+    <string name="notification_channel_name">YnnkMsg new messages</string>
+    <string name="system_message">System message</string>
+    <string name="currupted_attachment">[Attachment corrupted]</string>
+
+    <!-- Encoder Errors -->
+    <string name="error_expected_chars">Expected %1$d characters, received %2$d</string>
+    <string name="error_string_too_short">String too short</string>
+
+</resources>

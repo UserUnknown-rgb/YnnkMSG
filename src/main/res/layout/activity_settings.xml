@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            android:theme="@style/ThemeOverlay.MaterialComponents.ActionBar"/>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <!-- Auto delete -->
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_auto_delete"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/auto_delete_label"
+                android:checked="true"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Base26 -->
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_base26"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/base26_label"
+                android:checked="true"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/base26_info"
+                android:textSize="12sp"
+                android:textColor="#888888"
+                android:layout_marginBottom="16dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"/>
+
+            <!-- Auto add contacts -->
+
+            <!-- PGP Encryption -->
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_pgp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pgp_label"
+                android:checked="false"
+                android:layout_marginBottom="4dp"/>
+
+            <TextView
+                android:id="@+id/tv_pgp_warning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pgp_unavailable_warning"
+                android:textSize="12sp"
+                android:textColor="@android:color/holo_red_dark"
+                android:layout_marginBottom="16dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:visibility="gone"/>
+
+            <!-- PIN Code -->
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_pin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/pin_label"
+                android:checked="false"
+                android:layout_marginBottom="8dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_change_pin"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/change_pin"
+                android:visibility="gone"
+                android:layout_marginBottom="16dp"/>
+
+            <!-- Divider -->
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_auto_add_contacts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:checked="false"
+                android:text="@string/auto_add_contacts_label" />
+
+            <com.google.android.material.switchmaterial.SwitchMaterial
+                android:id="@+id/switch_request_confirmation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:checked="false"
+                android:text="@string/auto_request_confirmation" />
+
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="#E0E0E0" android:layout_marginBottom="24dp"/>
+
+            <!-- Chat background -->
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/background_preview"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <ImageView
+                android:id="@+id/iv_background_preview"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:scaleType="centerCrop"
+                android:background="#E0E0E0"
+                android:layout_marginBottom="8dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="24dp">
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_choose_background"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/choose_background"
+                    android:layout_marginEnd="8dp"
+                    app:cornerRadius="24dp"
+                    app:strokeWidth="1dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_clear_background"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/clear_background"
+                    app:cornerRadius="24dp"
+                    app:strokeWidth="1dp"/>
+            </LinearLayout>
+
+            <!-- Divider -->
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="#E0E0E0" android:layout_marginBottom="24dp"/>
+
+            <!-- Font size -->
+            <TextView
+                android:id="@+id/tv_font_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:layout_marginBottom="8dp"/>
+
+            <SeekBar
+                android:id="@+id/seek_bar_font_size"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:max="12"
+                android:progress="4" />
+
+            <!-- Divider -->
+            <View android:layout_width="match_parent" android:layout_height="1dp"
+                android:background="#E0E0E0" android:layout_marginBottom="24dp"/>
+
+            <!-- Clear Cache/Reset -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_manage_ignored"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/manage_ignored_emails"
+                app:cornerRadius="24dp"
+                app:icon="@android:drawable/ic_menu_close_clear_cancel"
+                app:strokeWidth="1dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_clear_cache"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/clear_cache"
+                android:textColor="@android:color/holo_red_dark"
+                app:icon="@android:drawable/ic_menu_delete"
+                app:iconTint="@android:color/holo_red_dark"
+                app:strokeColor="@android:color/holo_red_dark"
+                app:cornerRadius="24dp"
+                app:strokeWidth="1dp"/>
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
