@@ -548,8 +548,8 @@ class EmailService(private val context: Context) {
             val privateKey = SecurePrefs.getPgpPrivateKey(context)
             val ignoredEmails = AppPrefs.getIgnoredEmails(context)
 
-            // key is email, Long is send time
-            val receivedConfirmMap = mutableMapOf<String, Long>()
+            // key is email, Long is sent time
+            val receiveToConfirmMap = mutableMapOf<String, Long>()
 
             db.withTransaction {
                 for (msg in messages) {
@@ -580,8 +580,11 @@ class EmailService(private val context: Context) {
                     val decodedResult = decodeBody(bodyRaw)
 
                     if (decodedResult.params?.needConfirmReceived == true)
-                    {
-                        receivedConfirmMap[effectiveEmail] = decodedResult.params.sendTime ?: -1;
+
+                        val use_time = decodedResult.params.sendTime ?: -1;
+                        if (!receiveToConfirmMap.contains(effectiveEmail) || receiveToConfirmMap[effectiveEmail]!! < use_time) {
+                            receiveToConfirmMap[effectiveEmail] = use_time;
+                        }
                     }
 
                     if (decodedResult.params?.type == MSGHEADER_TYPE_CONFIRMATION) {
@@ -779,7 +782,7 @@ class EmailService(private val context: Context) {
                 }
             }
             
-            for ((email, time) in receivedConfirmMap) {
+            for ((email, time) in receiveToConfirmMap) {
                 if (time > 0) {
                     sendServiceMessage(email, MSGHEADER_TYPE_CONFIRMATION, time.toString())
                 }
