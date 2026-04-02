@@ -101,11 +101,14 @@
     <string name="save_to_downloads">Сохранить в Загрузки</string>
     <string name="saved_to_downloads">Файл сохранен в Загрузки</string>
     <string name="no_app_to_open">Нет приложений для открытия этого файла</string>
+    <string name="send_as_chat">Отправить как сообщение чата</string>
+    <string name="send_as_email">Отправить как обычное письмо</string>
     <string name="paste_public_key">Вставить публичный ключ</string>
     <string name="copy_my_public_key">Скопировать мой ключ</string>
     <string name="invalid_pgp_key">Некорректный PGP ключ</string>
     <string name="public_key_pasted">Ключ вставлен</string>
     <string name="public_key_copied">Ваш ключ скопирован в буфер обмена</string>
+    <string name="msg_signature">Сообщение было отправлено из приложения YnnkMSG. Не отвечайте на это письмо!</string>
 
     <!-- Settings -->
     <string name="settings">Настройки</string>

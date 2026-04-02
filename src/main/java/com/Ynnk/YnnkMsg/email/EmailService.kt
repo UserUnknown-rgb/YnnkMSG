@@ -35,6 +35,8 @@ private const val MSGHEADER_TYPE_DATACHUNK = "data_chunk"
 private const val MSGHEADER_TYPE_SECONDEMAIL = "second_imap"
 private const val MSGHEADER_TYPE_CONFIRMATION = "messages_received"
 
+private const val SUBJECT_SIMPLEMAIL = "Message from YnnkMSG"
+
 /** Maximum size of a single file chunk (before base64 encoding). */
 private const val CHUNK_SIZE_BYTES = 10 * 1024 * 1024L  // 10 MB
 
@@ -71,7 +73,7 @@ class EmailService(private val context: Context) {
     data class DecodedBody(
         val text: String,
         val format: String,
-        val params: MessageParams? = null
+        var params: MessageParams? = null
     )
 
     // ── Generate Subject ──────────────────────────────────────────────────────
@@ -212,6 +214,74 @@ class EmailService(private val context: Context) {
             Result.success(Unit)
         } catch (e: Exception) {
             Log.e(TAG, "Send failed", e)
+            Result.failure(e)
+        }
+    }
+
+    suspend fun sendClassicEmail(
+        toEmail: String,
+        text: String,
+        attachmentFiles: List<File> = emptyList()
+    ): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
+            val userId = SecurePrefs.getActiveUserId(context)
+            if (userId == -1L) return@withContext Result.failure(Exception("No active user"))
+
+            val userEmail = SecurePrefs.getEmail(context)
+                ?: return@withContext Result.failure(Exception(context.getString(R.string.error_not_authorized)))
+            val password = SecurePrefs.getPassword(context)
+                ?: return@withContext Result.failure(Exception(context.getString(R.string.error_no_password)))
+            val smtpHost = SecurePrefs.getSmtpHost(context)
+                ?: return@withContext Result.failure(Exception(context.getString(R.string.error_no_smtp_settings)))
+            val smtpPort = SecurePrefs.getSmtpPort(context)
+            val useSsl = SecurePrefs.getSmtpSsl(context)
+            val useStartTls = SecurePrefs.getSmtpStartTls(context)
+
+            val session = getSmtpSession(userEmail, password, smtpHost, smtpPort, useSsl, useStartTls)
+
+            val signature = "\n\n" + "-".repeat(50) + "\n" + context.getString(R.string.msg_signature)
+            val fullBody = text + signature
+
+            val mimeMessage = MimeMessage(session).apply {
+                setFrom(InternetAddress(userEmail))
+                addRecipient(javax.mail.Message.RecipientType.TO, InternetAddress(toEmail))
+                subject = SUBJECT_SIMPLEMAIL
+
+                if (attachmentFiles.isEmpty()) {
+                    setText(fullBody, "utf-8")
+                } else {
+                    val multipart = MimeMultipart()
+                    multipart.addBodyPart(MimeBodyPart().apply { setText(fullBody, "utf-8") })
+                    for (file in attachmentFiles) {
+                        multipart.addBodyPart(MimeBodyPart().apply {
+                            dataHandler = javax.activation.DataHandler(javax.activation.FileDataSource(file))
+                            fileName = MimeUtility.encodeText(file.name)
+                            disposition = Part.ATTACHMENT
+                        })
+                    }
+                    setContent(multipart)
+                }
+                sentDate = Date()
+            }
+
+            Transport.send(mimeMessage)
+
+            val msgId = mimeMessage.messageID ?: UUID.randomUUID().toString()
+            messageDao.insert(
+                Message(
+                    userId = userId,
+                    contactEmail = toEmail,
+                    authorEmail = userEmail,
+                    text = text,
+                    isOutgoing = true,
+                    attachments = buildAttachmentsJsonFromFiles(attachmentFiles),
+                    messageId = msgId
+                )
+            )
+
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Log.e(TAG, "Classic send failed", e)
             Result.failure(e)
         }
     }
@@ -384,10 +454,10 @@ class EmailService(private val context: Context) {
         Transport.send(mimeMessage)
     }
 
-    fun generateMsgHeader(type: String, authorEmail: String? = null, replyTo: Int = -1, attachments: List<AttachmentParam>? = null): String {
+    fun generateMsgHeader(type: String, authorEmail: String? = null, replyTo: Int = -1, attachments: List<AttachmentParam>? = null, isService: Boolean = false): String {
         return serializeMsgHeader(MessageParams(type, authorEmail, replyTo,
             System.currentTimeMillis(),
-            AppPrefs.isConfirmationRequestEnabled(context),
+            if (isService) false else AppPrefs.isConfirmationRequestEnabled(context),
             attachments))
     }
 
@@ -440,7 +510,7 @@ class EmailService(private val context: Context) {
                 } else {
                     listOf(AttachmentParam(1, attachmentFile.name ?: ""))
                 }
-            val msgHeader = generateMsgHeader(type, userEmail, -1, att)
+            val msgHeader = generateMsgHeader(type, userEmail, -1, att, true)
             val fullBody = msgHeader + (nonEncodedBodyText ?: "")
             val encodedFullBody = Base26Encoder.encodeText(fullBody)
 
@@ -552,7 +622,14 @@ class EmailService(private val context: Context) {
             val receiveToConfirmMap = mutableMapOf<String, Long>()
 
             db.withTransaction {
+
+                //db.appEventDao().logEvent("fetchNewMessages: found ${messages.size}")
+
                 for (msg in messages) {
+                    // Each message is processed independently — an exception in one
+                    // must not lose the others. IMAP SEEN flag is only set after
+                    // the Room insert succeeds, so nothing is lost on failure.
+                    try {
                     val subject = (msg as? MimeMessage)?.subject ?: ""
                     val from = (msg.from?.firstOrNull() as? InternetAddress)?.address ?: continue
                     val loweredFrom = from.lowercase()
@@ -572,18 +649,27 @@ class EmailService(private val context: Context) {
                         continue
                     }
 
-                    if (contact?.exclusivePrimaryEmail == false && !subject.startsWith(YNNKMSG_SUBJECT_PREFIX)) continue
+                    if (user?.exclusivePrimaryEmail == false) {
+                        val reToSimpleMail = subject.startsWith("Re:", true) && subject.endsWith(SUBJECT_SIMPLEMAIL);
+                        if (!subject.startsWith(YNNKMSG_SUBJECT_PREFIX) && !reToSimpleMail) continue
+                    }
 
                     // get message raw body and attachments
                     val (bodyRaw, rawAttachments) = parseMessage(msg)
                     // get message header
                     val decodedResult = decodeBody(bodyRaw)
-
-                    if (decodedResult.params?.needConfirmReceived == true)
+                    if (decodedResult.params == null)
                     {
-                        val use_time = decodedResult.params.sendTime ?: -1;
+                        // probably raw e-mail from outside of the app?
+                        decodedResult.params = MessageParams("raw", effectiveEmail, null, msg.sentDate?.time, false);
+                    }
+
+                    if ((decodedResult.params?.type == MSGHEADER_TYPE_TEXT || decodedResult.params?.type == MSGHEADER_TYPE_DATACHUNK)
+                        && decodedResult.params?.needConfirmReceived == true)
+                    {
+                        val use_time = decodedResult.params?.sendTime ?: -1;
                         if (!receiveToConfirmMap.contains(effectiveEmail) || receiveToConfirmMap[effectiveEmail]!! < use_time) {
-                            receiveToConfirmMap[effectiveEmail] = use_time;
+                            receiveToConfirmMap[effectiveEmail] = use_time + 1000;
                         }
                     }
 
@@ -637,7 +723,7 @@ class EmailService(private val context: Context) {
                     // ── Chunk message detection ───────────────────────────────
                     if (decodedResult.params?.type == MSGHEADER_TYPE_DATACHUNK) {
                         // Subject is always "Ynnk: TIMESTAMP" — extract timestamp as grouping key
-                        val subjectTimestamp = decodedResult.params.sendTime?.toString() ?: "0";
+                        val subjectTimestamp = decodedResult.params?.sendTime?.toString() ?: "0";
                         val bFirstMessage = rawAttachments.isEmpty()
 
                         ensureContactExists(userId, effectiveEmail)
@@ -646,10 +732,10 @@ class EmailService(private val context: Context) {
 
                         val assemblyResult = if (bFirstMessage) {
                             // First message: params.attachments carries md5s and original filenames
-                            val attachParams = decodedResult.params.attachments ?: emptyList()
+                            val attachParams = decodedResult.params?.attachments ?: emptyList()
                             val md5s = attachParams.mapNotNull { it.md5 }
                             val originalNames = attachParams.map { it.name }
-                            val authorEmail = decodedResult.params.authorEmail ?: effectiveEmail
+                            val authorEmail = decodedResult.params?.authorEmail ?: effectiveEmail
                             val msgTs = (msg as? MimeMessage)?.sentDate?.time ?: System.currentTimeMillis()
 
                             db.appEventDao().logEvent("Chunked transfer started from $effectiveEmail: ${attachParams.size} file(s)")
@@ -730,39 +816,41 @@ class EmailService(private val context: Context) {
                     }
 
                     var finalText = decodedResult.text
-                    var effectiveAuthorEmail = decodedResult.params?.authorEmail ?: effectiveEmail
+                    val effectiveAuthorEmail = decodedResult.params?.authorEmail ?: effectiveEmail
                     val finalAttachments = mutableListOf<String>()
 
+                    // ── PGP attachment decryption ─────────────────────────────
+                    // Filenames come from params.attachments (new format).
+                    // The old body-text splitting by ";" is no longer used.
                     if (decodedResult.format == "pgp" && rawAttachments.isNotEmpty() && privateKey != null) {
-                        val parts = decodedResult.text.split(";")
-                        val numAttachments = rawAttachments.size
-
-                        if (parts.size > numAttachments) {
-                            val fileNames = parts.takeLast(numAttachments)
-                            var cutLength = 0
-                            fileNames.forEach { cutLength += it.length + 1 }
-                            finalText = decodedResult.text.substring(0, (decodedResult.text.length - cutLength).coerceAtLeast(0))
-
-                            rawAttachments.forEachIndexed { index, path ->
-                                val encryptedFile = File(path)
-                                val decryptedBytes = PgpUtils.decryptBinary(encryptedFile.readBytes(), privateKey)
-                                if (decryptedBytes != null) {
-                                    val decryptedFile = File(encryptedFile.parent, fileNames[index])
-                                    decryptedFile.writeBytes(decryptedBytes)
-                                    finalAttachments.add(decryptedFile.absolutePath)
+                        val attachParams = decodedResult.params?.attachments
+                        rawAttachments.forEachIndexed { index, path ->
+                            val encryptedFile = File(path)
+                            val originalName = attachParams
+                                ?.firstOrNull { it.index == index + 1 }?.name
+                                ?: encryptedFile.name  // fallback: keep whatever name was received
+                            val decryptedBytes = PgpUtils.decryptBinary(encryptedFile.readBytes(), privateKey)
+                            if (decryptedBytes != null) {
+                                // Write decrypted data under the original filename
+                                val decryptedFile = File(encryptedFile.parentFile, originalName)
+                                decryptedFile.writeBytes(decryptedBytes)
+                                if (decryptedFile.absolutePath != encryptedFile.absolutePath) {
                                     encryptedFile.delete()
-                                } else {
-                                    finalAttachments.add(path)
                                 }
+                                finalAttachments.add(decryptedFile.absolutePath)
+                            } else {
+                                Log.e(TAG, "Failed to decrypt attachment: $path")
+                                finalAttachments.add(path)
                             }
-                        } else {
-                            finalAttachments.addAll(rawAttachments)
                         }
                     } else {
                         finalAttachments.addAll(rawAttachments)
                     }
+                    // ── End PGP attachment decryption ─────────────────────────
 
                     val isChatOpen = YnnkMsgApplication.activeChatEmail?.lowercase() == effectiveEmail.lowercase()
+                    val msgTimestamp = try { msg.sentDate?.time ?: System.currentTimeMillis() }
+                                       catch (_: Exception) { System.currentTimeMillis() }
 
                     messageDao.insert(Message(
                         userId = userId,
@@ -770,7 +858,7 @@ class EmailService(private val context: Context) {
                         authorEmail = effectiveAuthorEmail,
                         text = finalText,
                         isOutgoing = false,
-                        timestamp = msg.sentDate.time,
+                        timestamp = msgTimestamp,
                         attachments = buildAttachmentsJsonFromPaths(finalAttachments),
                         messageId = msgId,
                         isRead = isChatOpen
@@ -779,6 +867,16 @@ class EmailService(private val context: Context) {
                     
                     msg.setFlag(Flags.Flag.SEEN, true)
                     if (autoDelete) msg.setFlag(Flags.Flag.DELETED, true)
+
+                    } catch (e: Exception) {
+                        // Per-message error: log and skip this message rather than
+                        // losing the entire batch. The message stays unread on the
+                        // server and will be retried on the next fetch cycle.
+                        Log.e(TAG, "Error processing message from ${
+                            (msg.from?.firstOrNull() as? InternetAddress)?.address ?: "unknown"
+                        }: ${e.message}", e)
+                        db.appEventDao().logEvent("Skipped message due to error: ${e.message}")
+                    }
                 }
             }
             
@@ -790,6 +888,7 @@ class EmailService(private val context: Context) {
 
             Result.success(newCount)
         } catch (e: Exception) {
+            db.appEventDao().logEvent("Error fetching new messages: ${e.message}")
             Result.failure(e)
         } finally {
             if (shouldCheckSecondary) {
@@ -965,7 +1064,7 @@ class EmailService(private val context: Context) {
     // ── Body parsing & decoding ──────────────────────────────────
 
     private fun decodeBody(raw: String): DecodedBody {
-        var retText = ""
+        var retText = raw
         var retFormat = "raw"
         if (raw.startsWith(MSGBODY_HEADER_START)) {
             retText = raw;//.substring(MSGBODY_HEADER_START.length)
@@ -984,7 +1083,7 @@ class EmailService(private val context: Context) {
                     val privateKey = SecurePrefs.getPgpPrivateKey(context)
                     if (privateKey != null) {
                         val decrypted = PgpUtils.decrypt(decodedBytes, privateKey)
-                        if (decrypted != null) {
+                        if (!decrypted.isNullOrBlank()) {
                             retText = decrypted
                             retFormat = "pgp"
                         }
@@ -1014,23 +1113,88 @@ class EmailService(private val context: Context) {
             }
         }
 
-        return DecodedBody(retText, retFormat)
+        return DecodedBody(retText, retFormat, null)
+    }
+
+    private fun htmlToPlainText(html: String): String {
+        var text = html
+
+        // Block-level elements → newlines before and after
+        val blockTags = "p|div|br|h[1-6]|li|tr|blockquote|pre|section|article|header|footer|aside|main"
+        text = text.replace("<ul>", "").replace("</ul>", "").replace("</li>", "")
+        text = text.replace("\n<li>", "\n- ")
+        text = text.replace("<li>", "\n- ")
+        text = text.replace(Regex("<br\\s*/?>", RegexOption.IGNORE_CASE), "\n")
+        text = text.replace(Regex("</?($blockTags)(\\s[^>]*)?>", RegexOption.IGNORE_CASE), "\n")
+
+        // Remove everything inside <style> and <script>
+        text = text.replace(Regex("<(style|script)[^>]*>.*?</(style|script)>",
+            setOf(RegexOption.IGNORE_CASE, RegexOption.DOT_MATCHES_ALL)), "")
+
+        // Strip remaining tags
+        text = text.replace(Regex("<[^>]+>"), "")
+
+        // Decode common HTML entities
+        text = text
+            .replace("&nbsp;", " ")
+            .replace("&amp;", "&")
+            .replace("&lt;", "<")
+            .replace("&gt;", ">")
+            .replace("&quot;", "\"")
+            .replace("&#39;", "'")
+            .replace(Regex("&#(\\d+);")) { it.groupValues[1].toIntOrNull()
+                ?.toChar()?.toString() ?: "" }
+
+        // Collapse 3+ consecutive newlines into 2 (paragraph spacing)
+        text = text.replace(Regex("\n{3,}"), "\n\n")
+
+        return text.trim()
     }
 
     private fun parseMessage(part: Part): Pair<String, List<String>> {
         val text = StringBuilder()
         val paths = mutableListOf<String>()
-        if (part.isMimeType("text/plain") && part.disposition == null) {
-            text.append(part.content as String)
-        } else if (part.isMimeType("multipart/*")) {
-            val mp = part.content as Multipart
-            for (i in 0 until mp.count) {
-                val (pText, pPaths) = parseMessage(mp.getBodyPart(i))
-                text.append(pText)
-                paths.addAll(pPaths)
+
+        when {
+            part.isMimeType("text/plain") && part.disposition == null -> {
+                text.append(part.content as String)
             }
-        } else if (part.disposition != null) {
-            saveAttachment(part)?.let { paths.add(it) }
+            part.isMimeType("text/html") && part.disposition == null -> {
+                text.append(htmlToPlainText(part.content as String))
+            }
+            part.isMimeType("multipart/alternative") -> {
+                // Prefer text/plain over text/html; ignore other parts
+                val mp = part.content as Multipart
+                var plainText: String? = null
+                var htmlText: String? = null
+                for (i in 0 until mp.count) {
+                    val bp = mp.getBodyPart(i)
+                    when {
+                        bp.isMimeType("text/plain") && bp.disposition == null ->
+                            plainText = bp.content as? String
+                        bp.isMimeType("text/html") && bp.disposition == null ->
+                            htmlText = bp.content as? String
+                    }
+                }
+                text.append(
+                    when {
+                        plainText != null -> plainText
+                        htmlText != null -> htmlToPlainText(htmlText)
+                        else -> ""
+                    }
+                )
+            }
+            part.isMimeType("multipart/*") -> {
+                val mp = part.content as Multipart
+                for (i in 0 until mp.count) {
+                    val (pText, pPaths) = parseMessage(mp.getBodyPart(i))
+                    text.append(pText)
+                    paths.addAll(pPaths)
+                }
+            }
+            part.disposition != null -> {
+                saveAttachment(part)?.let { paths.add(it) }
+            }
         }
         return Pair(text.toString().trim(), paths)
     }
@@ -1133,7 +1297,9 @@ class EmailService(private val context: Context) {
             }
 
             // 3. Update 'is exclusive email' flag
-            updated = updated.copy(exclusivePrimaryEmail = info.exclusivePrimaryEmail)
+            if (info.exclusivePrimaryEmail != null) {
+                updated = updated.copy(exclusivePrimaryEmail = info.exclusivePrimaryEmail!!)
+            }
 
             // 4. Handle avatar
             val imagePath = attachments.firstOrNull {

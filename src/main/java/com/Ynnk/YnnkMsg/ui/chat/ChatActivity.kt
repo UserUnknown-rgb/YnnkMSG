@@ -383,13 +383,33 @@ class ChatActivity : AppCompatActivity() {
             if (isSearchMode) {
                 performSearch(binding.etMessage.text.toString())
             } else {
-                sendMessage() 
+                sendMessage(false) 
             }
+        }
+        binding.btnSend.setOnLongClickListener {
+            if (!isSearchMode) {
+                showSendMenu()
+                true
+            } else false
         }
         binding.btnClearAttachments.setOnClickListener {
             pendingAttachments.clear()
             updateAttachmentPreview()
         }
+    }
+
+    private fun showSendMenu() {
+        val popup = androidx.appcompat.widget.PopupMenu(this, binding.btnSend)
+        popup.menu.add(0, 1, 0, R.string.send_as_chat)
+        popup.menu.add(0, 2, 1, R.string.send_as_email)
+        popup.setOnMenuItemClickListener { item ->
+            when (item.itemId) {
+                1 -> sendMessage(false)
+                2 -> sendMessage(true)
+            }
+            true
+        }
+        popup.show()
     }
 
     private fun showAttachmentOptions() {
@@ -458,7 +478,7 @@ class ChatActivity : AppCompatActivity() {
         }
     }
 
-    private fun sendMessage() {
+    private fun sendMessage(isClassic: Boolean = false) {
         val text = binding.etMessage.text.toString().trim()
         if (text.isEmpty() && pendingAttachments.isEmpty()) return
 
@@ -477,7 +497,12 @@ class ChatActivity : AppCompatActivity() {
         binding.etMessage.setText("")
 
         lifecycleScope.launch {
-            val result = emailService.sendMessage(contactEmail, text, attachmentsToSend)
+            val result = if (isClassic) {
+                emailService.sendClassicEmail(contactEmail, text, attachmentsToSend)
+            } else {
+                emailService.sendMessage(contactEmail, text, attachmentsToSend)
+            }
+
             withContext(Dispatchers.Main) {
                 binding.btnSend.visibility = View.VISIBLE
                 binding.progressSend.visibility = View.GONE

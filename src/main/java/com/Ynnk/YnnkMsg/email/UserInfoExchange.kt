@@ -8,7 +8,7 @@ data class UserInfoExchange(
     @SerializedName("secure_email")
     var secureEmail: String? = null,
     @SerializedName("exclusive_primary_email")
-    var exclusivePrimaryEmail: Boolean = false,
+    var exclusivePrimaryEmail: Boolean?,
     @SerializedName("public_name")
     var publicName: String? = null
 )

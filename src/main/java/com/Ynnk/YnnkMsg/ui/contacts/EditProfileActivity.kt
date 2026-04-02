@@ -72,6 +72,7 @@ class EditProfileActivity : AppCompatActivity() {
             activeUser?.let { user ->
                 binding.etPrimaryEmail.setText(user.primaryEmail)
                 binding.etName.setText(user.name)
+                binding.swExclusivePrimaryEmail.isChecked = user.exclusivePrimaryEmail
 
                 user.avatarPath?.let { path ->
                     val file = File(path)
@@ -233,6 +234,7 @@ class EditProfileActivity : AppCompatActivity() {
         val user = activeUser ?: return
         val isVulnerable = user.vulnerableMode
         val newName = binding.etName.text.toString().trim()
+        val isExclusive = binding.swExclusivePrimaryEmail.isChecked
 
         lifecycleScope.launch {
             var avatarPath = user.avatarPath
@@ -247,7 +249,8 @@ class EditProfileActivity : AppCompatActivity() {
 
             val updatedUser = user.copy(
                 name = if (newName.isEmpty()) null else newName,
-                avatarPath = avatarPath
+                avatarPath = avatarPath,
+                exclusivePrimaryEmail = isExclusive
             )
 
             db.userDao().upsert(updatedUser)

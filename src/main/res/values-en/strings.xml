@@ -101,11 +101,14 @@
     <string name="save_to_downloads">Save to Downloads</string>
     <string name="saved_to_downloads">File saved to Downloads</string>
     <string name="no_app_to_open">No app found to open this file</string>
+    <string name="send_as_chat">Send as chat message</string>
+    <string name="send_as_email">Send as regular email</string>
     <string name="paste_public_key">Paste public key</string>
     <string name="copy_my_public_key">Copy my key</string>
     <string name="invalid_pgp_key">Invalid PGP key</string>
     <string name="public_key_pasted">Key pasted</string>
     <string name="public_key_copied">Your key copied to clipboard</string>
+    <string name="msg_signature">This message was sent from the YnnkMSG app. Do not reply on it directly!</string>
 
     <!-- Settings -->
     <string name="settings">Settings</string>
